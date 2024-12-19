@@ -4,6 +4,7 @@ import { useState } from "react";
 import Header from "./components/Header";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./config/firebase";
+import ContactLists from "./components/ContactLists";
 const App = () => {
   const [contacts, setContacts] = useState([]);
   useEffect(() => {
@@ -14,10 +15,11 @@ const App = () => {
         const querySnapshot = await getDocs(collectionRef);
         const data = querySnapshot.docs.map((doc) => {
           return {
-            id: Math.random(),
+            id: doc.id,
             ...doc.data(),
           };
         });
+        console.log(data);
 
         setContacts(data);
       } catch (error) {
@@ -29,6 +31,7 @@ const App = () => {
   return (
     <div className="max-w-[370px] mx-auto">
       <Header />
+      <ContactLists contacts={contacts} />
     </div>
   );
 };

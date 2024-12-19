@@ -4,11 +4,11 @@ import { IoSearch } from "react-icons/io5";
 import { FaPlusCircle } from "react-icons/fa";
 const Header = () => {
   return (
-    <div className="flex gap-2 h-[100px] justify-center">
-      <div className="flex items-center ">
-        <IoIosContacts className="text-white text-4xl" />
-      </div>
-      <div className="flex relative items-center">
+    <div className="flex justify-around gap-2 h-[100px] ">
+      {/* <div className="flex items-center pl-2 ">
+        <IoIosContacts className="text-white text-7xl" />
+      </div> */}
+      <div className="flex relative items-center flex-grow ml-3">
         <IoSearch className=" ml-1 text-white text-2xl absolute" />
         <input
           type="text"
@@ -17,8 +17,8 @@ const Header = () => {
         />
       </div>
 
-      <button>
-        <FaPlusCircle className=" text-4xl text-white cursor-pointer " />
+      <button className=" text-center w-[52px]">
+        <FaPlusCircle className=" text-4xl text-white cursor-pointer ml-1 " />
       </button>
     </div>
   );
