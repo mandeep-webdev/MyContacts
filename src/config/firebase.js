@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
+import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyCrhnysCVn2jIkOL9WJmGZcFc6xxHtLO2M",
   authDomain: "mycontacts-8205d.firebaseapp.com",
