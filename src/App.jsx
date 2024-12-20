@@ -5,8 +5,18 @@ import Header from "./components/Header";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./config/firebase";
 import ContactLists from "./components/ContactLists";
+import Modal from "./components/Modal";
 const App = () => {
   const [contacts, setContacts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
   useEffect(() => {
     const fetchContact = async () => {
       try {
@@ -30,8 +40,9 @@ const App = () => {
   }, []);
   return (
     <div className="max-w-[370px] mx-auto">
-      <Header />
+      <Header openModal={openModal} />
       <ContactLists contacts={contacts} />
+      {isModalOpen && <Modal closeModal={closeModal} />}
     </div>
   );
 };
