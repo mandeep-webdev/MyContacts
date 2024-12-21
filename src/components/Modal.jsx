@@ -1,10 +1,11 @@
 import React from "react";
-import { IoMdClose } from "react-icons/io";
+import { createPortal } from "react-dom";
+
 const Modal = ({ closeModal }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-  return (
+  return createPortal(
     <div className="fixed inset-0 flex justify-center items-center backdrop-blur-sm">
       <div className=" bg-white p-6 rounded-lg w-96">
         <h2 className="text-xl font-semibold mb-2 text-slate-600 text-center">
@@ -52,7 +53,8 @@ const Modal = ({ closeModal }) => {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.getElementById("modal-root")
   );
 };
 
