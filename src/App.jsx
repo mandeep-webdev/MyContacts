@@ -14,6 +14,7 @@ import { db } from "./config/firebase";
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
+  const [filteredContacts, setFilteredContacts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [modeValue, setModeValue] = useState("add");
@@ -48,12 +49,24 @@ const App = () => {
         // console.log(data);
 
         setContacts(data);
+        setFilteredContacts(data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchContact();
   }, []);
+
+  const handleChange = (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    setFilteredContacts(
+      contacts.filter(
+        (contact) =>
+          contact.name.toLowerCase().includes(searchTerm) ||
+          contact.mobile.includes(searchTerm)
+      )
+    );
+  };
 
   /* Delete Contact */
   const handleDelete = async (id) => {
@@ -89,9 +102,13 @@ const App = () => {
   };
   return (
     <div className="max-w-[370px] mx-auto">
-      <Header openModal={openModal} setModeValue={setModeValue} />
+      <Header
+        openModal={openModal}
+        setModeValue={setModeValue}
+        handleChange={handleChange}
+      />
       <ContactLists
-        contacts={contacts}
+        contacts={filteredContacts}
         openModal={openModal}
         setModeValue={setModeValue}
         handleDelete={handleDelete}

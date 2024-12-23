@@ -2,7 +2,7 @@ import React from "react";
 import { IoIosContacts } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { FaPlusCircle } from "react-icons/fa";
-const Header = ({ setModeValue, openModal }) => {
+const Header = ({ setModeValue, openModal, handleChange }) => {
   const handleAdd = () => {
     openModal();
     setModeValue("add");
@@ -17,6 +17,7 @@ const Header = ({ setModeValue, openModal }) => {
         <input
           type="text"
           placeholder="Search Contact"
+          onChange={handleChange}
           className=" focus:outline-none pl-8 text-white bg-transparent  border border-white rounded-md h-9 flex-grow px-4 text-sm"
         />
       </div>
