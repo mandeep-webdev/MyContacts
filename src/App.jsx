@@ -1,22 +1,38 @@
 import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { db } from "./config/firebase";
 import ContactLists from "./components/ContactLists";
 import Modal from "./components/Modal";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "./config/firebase";
+
 const App = () => {
   const [contacts, setContacts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedContact, setSelectedContact] = useState(null);
   const [modeValue, setModeValue] = useState("add");
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  const openModal = () => {
+  const openModal = (contact = null) => {
+    if (contact) {
+      setModeValue("update");
+      setSelectedContact(contact);
+    } else {
+      setModeValue("add");
+      setSelectedContact(null);
+    }
     setIsModalOpen(true);
   };
+
   useEffect(() => {
     const fetchContact = async () => {
       try {
@@ -29,7 +45,7 @@ const App = () => {
             ...doc.data(),
           };
         });
-        console.log(data);
+        // console.log(data);
 
         setContacts(data);
       } catch (error) {
@@ -38,6 +54,8 @@ const App = () => {
     };
     fetchContact();
   }, []);
+
+  /* Delete Contact */
   const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "contacts", id));
@@ -48,18 +66,42 @@ const App = () => {
       console.log(error);
     }
   };
+
+  /* Update Contact */
+
+  const handleUpdateContact = async (updatedContact) => {
+    try {
+      const contactRef = doc(db, "contacts", updatedContact?.id);
+      await updateDoc(contactRef, {
+        name: updatedContact?.name,
+        mobile: updatedContact?.mobile,
+      });
+      setContacts((prevContacts) => {
+        return prevContacts.map((contact) =>
+          contact.id === updatedContact?.id ? updatedContact : contact
+        );
+      });
+
+      setIsModalOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="max-w-[370px] mx-auto">
-      <Header openModal={openModal} />
+      <Header openModal={openModal} setModeValue={setModeValue} />
       <ContactLists
         contacts={contacts}
         openModal={openModal}
+        setModeValue={setModeValue}
         handleDelete={handleDelete}
       />
       <Modal
         isModalOpen={isModalOpen}
         closeModal={closeModal}
         mode={modeValue}
+        selectedContact={selectedContact}
+        handleUpdateContact={handleUpdateContact}
       />
     </div>
   );

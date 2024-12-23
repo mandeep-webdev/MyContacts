@@ -2,7 +2,11 @@ import React from "react";
 import { IoIosContacts } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { FaPlusCircle } from "react-icons/fa";
-const Header = ({ openModal }) => {
+const Header = ({ setModeValue, openModal }) => {
+  const handleAdd = () => {
+    openModal();
+    setModeValue("add");
+  };
   return (
     <div className="flex justify-around gap-2 h-[100px] ">
       {/* <div className="flex items-center pl-2 ">
@@ -17,7 +21,7 @@ const Header = ({ openModal }) => {
         />
       </div>
 
-      <button className=" text-center w-[52px]" onClick={openModal}>
+      <button className=" text-center w-[52px]" onClick={handleAdd}>
         <FaPlusCircle className=" text-4xl text-white cursor-pointer ml-1 " />
       </button>
     </div>
