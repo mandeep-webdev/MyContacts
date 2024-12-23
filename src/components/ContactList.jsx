@@ -2,7 +2,10 @@ import React from "react";
 import { FaUserCircle, FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
-const ContactList = ({ contact }) => {
+const ContactList = ({ contact, openModal, handleDelete }) => {
+  const handleUpdate = () => {
+    openModal();
+  };
   return (
     <div className="flex mb-3 justify-between gap-2 h-[64px] w-[360px] border bg-white rounded-lg shadow-lg  border-transparent text-center">
       <div className="flex text-center  justify-center items-center">
@@ -16,8 +19,14 @@ const ContactList = ({ contact }) => {
         <h3 className="text-sm text-gray-500">{contact.mobile}</h3>
       </div>
       <div className="flex mr-2 justify-center items-center">
-        <FaEdit className="text-2xl text-blue-500  cursor-pointer" />
-        <MdDelete className="text-2xl text-red-500 ml-1 cursor-pointer " />
+        <FaEdit
+          className="text-2xl text-blue-500  cursor-pointer"
+          onClick={handleUpdate}
+        />
+        <MdDelete
+          className="text-2xl text-red-500 ml-1 cursor-pointer "
+          onClick={() => handleDelete(contact.id)}
+        />
       </div>
     </div>
   );
