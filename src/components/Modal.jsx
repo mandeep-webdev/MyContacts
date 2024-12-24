@@ -16,6 +16,7 @@ const Modal = ({
   mode,
   isModalOpen,
   closeModal,
+  handleAddContact,
 }) => {
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
@@ -31,15 +32,6 @@ const Modal = ({
       .required("Mobile number is required"),
     countryCode: Yup.string().required("Country code is required"),
   });
-  const addContact = async (values) => {
-    try {
-      const collectionRef = collection(db, "contacts");
-      const docRef = await addDoc(collectionRef, values);
-      closeModal();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   if (!isModalOpen) {
     return null;
@@ -66,10 +58,10 @@ const Modal = ({
             };
             if (mode === "update") {
               const updatedContact = { ...selectedContact, ...submitValues };
-              console.log(updatedContact);
+              // console.log(updatedContact);
               handleUpdateContact(updatedContact);
             } else {
-              addContact(submitValues);
+              handleAddContact({ ...submitValues });
             }
           }}
         >

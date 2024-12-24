@@ -7,10 +7,12 @@ import {
   collection,
   getDocs,
   deleteDoc,
+  addDoc,
   doc,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./config/firebase";
+import NoContact from "./components/NoContact";
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
@@ -58,23 +60,40 @@ const App = () => {
   }, []);
 
   const handleChange = (e) => {
-    const searchTerm = e.target.value.toLowerCase();
+    const searchContact = e.target.value.toLowerCase();
     setFilteredContacts(
       contacts.filter(
         (contact) =>
-          contact.name.toLowerCase().includes(searchTerm) ||
-          contact.mobile.includes(searchTerm)
+          contact.name.toLowerCase().includes(searchContact) ||
+          contact.mobile.includes(searchContact)
       )
     );
+  };
+
+  const handleAddContact = async (newContact) => {
+    try {
+      const docRef = await addDoc(collection(db, "contacts"), newContact);
+      const addedContact = { id: docRef.id, ...newContact };
+      setContacts((prevContacts) => {
+        const updatedContacts = [...prevContacts, addedContact];
+        setFilteredContacts(updatedContacts);
+        return updatedContacts;
+      });
+      setIsModalOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   /* Delete Contact */
   const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "contacts", id));
-      setContacts((prevContacts) =>
-        prevContacts.filter((contact) => contact.id !== id)
-      );
+      setContacts((contacts) => {
+        const filteredData = contacts.filter((contact) => contact.id !== id);
+        setFilteredContacts(filteredData);
+        return filteredData;
+      });
     } catch (error) {
       console.log(error);
     }
@@ -90,9 +109,11 @@ const App = () => {
         mobile: updatedContact?.mobile,
       });
       setContacts((prevContacts) => {
-        return prevContacts.map((contact) =>
+        const filteredData = prevContacts.map((contact) =>
           contact.id === updatedContact?.id ? updatedContact : contact
         );
+        setFilteredContacts(filteredData);
+        return filteredData;
       });
 
       setIsModalOpen(false);
@@ -107,18 +128,23 @@ const App = () => {
         setModeValue={setModeValue}
         handleChange={handleChange}
       />
-      <ContactLists
-        contacts={filteredContacts}
-        openModal={openModal}
-        setModeValue={setModeValue}
-        handleDelete={handleDelete}
-      />
+      {contacts.length == 0 ? (
+        <NoContact />
+      ) : (
+        <ContactLists
+          contacts={filteredContacts}
+          openModal={openModal}
+          setModeValue={setModeValue}
+          handleDelete={handleDelete}
+        />
+      )}
       <Modal
         isModalOpen={isModalOpen}
         closeModal={closeModal}
         mode={modeValue}
         selectedContact={selectedContact}
         handleUpdateContact={handleUpdateContact}
+        handleAddContact={handleAddContact}
       />
     </div>
   );
