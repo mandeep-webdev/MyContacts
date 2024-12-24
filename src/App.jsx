@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import ContactLists from "./components/ContactLists";
 import Modal from "./components/Modal";
+import { FaTimes } from "react-icons/fa"; // Import close icon
 import {
   collection,
   getDocs,
@@ -13,7 +14,8 @@ import {
 } from "firebase/firestore";
 import { db } from "./config/firebase";
 import NoContact from "./components/NoContact";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const App = () => {
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
@@ -74,6 +76,15 @@ const App = () => {
     try {
       const docRef = await addDoc(collection(db, "contacts"), newContact);
       const addedContact = { id: docRef.id, ...newContact };
+      toast.success("Contact Added Successfully", {
+        style: {
+          background: "white",
+          color: "gray",
+          borderRadius: "16px",
+          fontWeight: "normal",
+          overflow: "hidden",
+        },
+      });
       setContacts((prevContacts) => {
         const updatedContacts = [...prevContacts, addedContact];
         setFilteredContacts(updatedContacts);
@@ -89,6 +100,15 @@ const App = () => {
   const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "contacts", id));
+      toast.success("Contact Deleted Successfully", {
+        style: {
+          background: "white",
+          color: "gray",
+          borderRadius: "16px",
+          fontWeight: "normal",
+          overflow: "hidden",
+        },
+      });
       setContacts((contacts) => {
         const filteredData = contacts.filter((contact) => contact.id !== id);
         setFilteredContacts(filteredData);
@@ -108,6 +128,16 @@ const App = () => {
         name: updatedContact?.name,
         mobile: updatedContact?.mobile,
       });
+      toast.success("Contact Updated Successfully", {
+        style: {
+          background: "white",
+          color: "gray",
+          borderRadius: "16px",
+          fontWeight: "normal",
+          overflow: "hidden",
+        },
+      });
+
       setContacts((prevContacts) => {
         const filteredData = prevContacts.map((contact) =>
           contact.id === updatedContact?.id ? updatedContact : contact
@@ -145,6 +175,13 @@ const App = () => {
         selectedContact={selectedContact}
         handleUpdateContact={handleUpdateContact}
         handleAddContact={handleAddContact}
+      />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        pauseOnHover
+        theme="light"
       />
     </div>
   );
